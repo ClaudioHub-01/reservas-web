@@ -4,7 +4,9 @@ Aplicación web para que los clientes de un negocio **reserven horarios en líne
 
 La demo está configurada como un centro de karting, pero sirve para **cualquier negocio que trabaje con horas**: peluquerías, canchas, consultas, talleres o clases. Para adaptarla basta con editar un archivo de configuración.
 
-**🔗 Demo en vivo:** _[agrega aquí el link cuando la publiques]_ · Panel: `/admin` (clave de demo: `demo1234`)
+### 🔗 [Ver demo en vivo → claudiohub.pythonanywhere.com](https://claudiohub.pythonanywhere.com)
+
+Panel del negocio: [`/admin`](https://claudiohub.pythonanywhere.com/admin/) · clave de demo: `demo1234`
 
 | Reserva del cliente | Panel del negocio |
 |---|---|
