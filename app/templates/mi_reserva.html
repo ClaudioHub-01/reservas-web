@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+{% block titulo %}Mi reserva · {{ negocio.nombre }}{% endblock %}
+{% block contenido %}
+<h1>Mi reserva</h1>
+{% if not r %}
+<form method="post" class="tarjeta formulario estrecho">
+  <input type="hidden" name="csrf" value="{{ csrf() }}">
+  <label>Código de reserva<input name="codigo" required maxlength="10" placeholder="Ej. A3F9C1" autocomplete="off"></label>
+  <label>Correo con el que reservaste<input type="email" name="email" required></label>
+  <button class="boton">Buscar</button>
+</form>
+{% else %}
+<section class="tarjeta estrecho">
+  <span class="estado {{ r.estado }}">{{ {'confirmada':'Confirmada','cancelada':'Cancelada','asistio':'Asistió','no_asistio':'No asistió'}[r.estado] }}</span>
+  <dl class="detalle">
+    <dt>Código</dt><dd>{{ r.codigo }}</dd>
+    <dt>Servicio</dt><dd>{{ servicio.nombre }}</dd>
+    <dt>Fecha</dt><dd>{{ r.inicio | fecha_larga }}</dd>
+    <dt>Hora</dt><dd>{{ r.inicio[11:16] }} – {{ r.fin[11:16] }}</dd>
+    <dt>Personas</dt><dd>{{ r.personas }}</dd>
+    <dt>Nombre</dt><dd>{{ r.nombre }}</dd>
+  </dl>
+  {% if r.estado == 'confirmada' %}
+  <form method="post" onsubmit="return confirm('¿Seguro que quieres cancelar esta reserva?');">
+    <input type="hidden" name="csrf" value="{{ csrf() }}">
+    <input type="hidden" name="codigo" value="{{ r.codigo }}">
+    <input type="hidden" name="email" value="{{ r.email }}">
+    <input type="hidden" name="accion" value="cancelar">
+    <button class="boton peligro">Cancelar reserva</button>
+  </form>
+  {% endif %}
+  <p><a href="{{ url_for('publico.mi_reserva') }}">Buscar otra reserva</a></p>
+</section>
+{% endif %}
+{% endblock %}

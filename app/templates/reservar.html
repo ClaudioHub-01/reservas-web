@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+{% block titulo %}Reservar {{ servicio.nombre }} · {{ negocio.nombre }}{% endblock %}
+{% block contenido %}
+<a class="volver" href="{{ url_for('publico.inicio') }}">← Volver</a>
+<h1>{{ servicio.nombre }}</h1>
+<p class="subtitulo">{{ servicio.duracion }} min · {{ servicio.precio | clp }} · hasta {{ servicio.max_personas }} personas</p>
+
+<form method="post" class="tarjeta formulario" id="form-reserva" data-servicio="{{ servicio.id }}">
+  <input type="hidden" name="csrf" value="{{ csrf() }}">
+
+  <fieldset>
+    <legend>1. Elige el día</legend>
+    <div class="dias" role="radiogroup">
+      {% for d in dias %}
+      <label class="dia">
+        <input type="radio" name="fecha" value="{{ d.isoformat() }}" {% if form.fecha == d.isoformat() %}checked{% endif %} required>
+        <span><small>{{ (d | fecha_larga).split(' ')[0][:3] }}</small><b>{{ d.day }}</b><small>{{ (d | fecha_larga).split(' ')[-1][:3] }}</small></span>
+      </label>
+      {% endfor %}
+    </div>
+  </fieldset>
+
+  <fieldset>
+    <legend>2. Elige el horario</legend>
+    <div id="horarios" class="horarios" aria-live="polite"><p class="ayuda">Primero selecciona un día.</p></div>
+    <input type="hidden" name="hora" id="hora" value="{{ form.hora or '' }}">
+  </fieldset>
+
+  <fieldset>
+    <legend>3. Tus datos</legend>
+    <div class="campos">
+      <label>Nombre completo<input name="nombre" value="{{ form.nombre or '' }}" required minlength="3" maxlength="80" autocomplete="name"></label>
+      <label>Correo<input type="email" name="email" value="{{ form.email or '' }}" required maxlength="120" autocomplete="email"></label>
+      <label>Teléfono<input type="tel" name="telefono" value="{{ form.telefono or '' }}" required placeholder="+56 9 1234 5678" autocomplete="tel"></label>
+      <label>Personas<input type="number" name="personas" value="{{ form.personas or 1 }}" min="1" max="{{ servicio.max_personas }}" required></label>
+      <label class="ancho">Comentario (opcional)<textarea name="comentario" maxlength="500" rows="2">{{ form.comentario or '' }}</textarea></label>
+    </div>
+  </fieldset>
+
+  <button class="boton grande" type="submit" id="confirmar" disabled>Confirmar reserva</button>
+</form>
+{% endblock %}
+{% block scripts %}<script src="{{ url_for('static', filename='reservar.js') }}"></script>{% endblock %}

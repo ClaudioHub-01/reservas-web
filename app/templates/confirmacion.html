@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+{% block titulo %}Reserva confirmada · {{ negocio.nombre }}{% endblock %}
+{% block contenido %}
+<section class="tarjeta confirmacion">
+  <div class="check">✓</div>
+  <h1>¡Reserva confirmada!</h1>
+  <p>Te enviamos el detalle a <b>{{ r.email }}</b>.</p>
+  <div class="codigo">Código de reserva <b>{{ r.codigo }}</b></div>
+  <dl class="detalle">
+    <dt>Servicio</dt><dd>{{ servicio.nombre }}</dd>
+    <dt>Fecha</dt><dd>{{ r.inicio | fecha_larga }}</dd>
+    <dt>Hora</dt><dd>{{ r.inicio[11:16] }} – {{ r.fin[11:16] }}</dd>
+    <dt>Personas</dt><dd>{{ r.personas }}</dd>
+    <dt>Valor</dt><dd>{{ servicio.precio | clp }} <small>(se paga en el local)</small></dd>
+  </dl>
+  <p class="ayuda">Guarda tu código: lo necesitas para revisar o cancelar la reserva.</p>
+  <a class="boton" href="{{ url_for('publico.inicio') }}">Volver al inicio</a>
+</section>
+{% endblock %}

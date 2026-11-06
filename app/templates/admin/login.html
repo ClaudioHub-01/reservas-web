@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+{% block titulo %}Ingreso administración · {{ negocio.nombre }}{% endblock %}
+{% block contenido %}
+<h1>Panel de administración</h1>
+<form method="post" class="tarjeta formulario estrecho">
+  <input type="hidden" name="csrf" value="{{ csrf() }}">
+  <label>Clave<input type="password" name="clave" required autofocus autocomplete="current-password"></label>
+  <button class="boton">Ingresar</button>
+  <p class="ayuda">Demo: la clave por defecto es <code>demo1234</code> (cámbiala en <code>.env</code>).</p>
+</form>
+{% endblock %}

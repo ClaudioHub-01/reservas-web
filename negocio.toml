@@ -1,0 +1,46 @@
+# Configuración del negocio. Para adaptar el sistema a otro rubro
+# (peluquería, cancha, consulta, etc.) basta con editar este archivo.
+
+nombre = "Speed Kart Demo"
+eslogan = "Reserva tu carrera en minutos"
+zona_horaria = "America/Santiago"
+moneda = "CLP"
+intervalo_minutos = 15        # cada cuánto se ofrecen horarios (10:00, 10:15, ...)
+dias_anticipacion = 30        # hasta cuántos días hacia adelante se puede reservar
+minutos_minimos_aviso = 60    # no se puede reservar con menos de esta anticipación
+direccion = "Av. Ficticia 1234, Santiago"
+telefono = "+56 9 0000 0000"
+
+# Horario de atención por día (lunes = 0 ... domingo = 6). Día ausente = cerrado.
+[horarios]
+0 = []                        # lunes: cerrado (mantención)
+1 = [["15:00", "21:00"]]
+2 = [["15:00", "21:00"]]
+3 = [["15:00", "21:00"]]
+4 = [["15:00", "22:00"]]
+5 = [["11:00", "14:00"], ["15:00", "22:00"]]
+6 = [["11:00", "20:00"]]
+
+[[servicios]]
+id = "tanda-10"
+nombre = "Tanda 10 minutos"
+descripcion = "Ideal para tu primera vez en la pista."
+duracion = 15                 # minutos que ocupa la pista (incluye ingreso y equipamiento)
+precio = 12000
+max_personas = 8
+
+[[servicios]]
+id = "tanda-20"
+nombre = "Tanda 20 minutos"
+descripcion = "Más vueltas para mejorar tu tiempo."
+duracion = 30
+precio = 20000
+max_personas = 8
+
+[[servicios]]
+id = "gran-premio"
+nombre = "Gran Premio grupal"
+descripcion = "Clasificación + carrera + podio. Perfecto para cumpleaños y empresas."
+duracion = 60
+precio = 150000
+max_personas = 12

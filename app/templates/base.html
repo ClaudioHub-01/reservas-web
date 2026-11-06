@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block titulo %}{{ negocio.nombre }}{% endblock %}</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='estilos.css') }}">
+</head>
+<body>
+  <header class="barra">
+    <div class="contenedor barra-interior">
+      <a class="marca" href="{{ url_for('publico.inicio') }}"><span class="logo">🏁</span> {{ negocio.nombre }}</a>
+      <nav>
+        <a href="{{ url_for('publico.mi_reserva') }}">Mi reserva</a>
+        {% if session.admin %}
+          <a href="{{ url_for('admin.agenda') }}">Panel</a>
+          <form method="post" action="{{ url_for('admin.salir') }}" class="en-linea">
+            <input type="hidden" name="csrf" value="{{ csrf() }}"><button class="enlace">Salir</button>
+          </form>
+        {% endif %}
+      </nav>
+    </div>
+  </header>
+  <main class="contenedor">
+    {% with mensajes = get_flashed_messages(with_categories=true) %}
+      {% for categoria, mensaje in mensajes %}
+        <div class="aviso {{ categoria }}" role="alert">{{ mensaje }}</div>
+      {% endfor %}
+    {% endwith %}
+    {% block contenido %}{% endblock %}
+  </main>
+  <footer class="pie contenedor">
+    {{ negocio.nombre }} · {{ negocio.direccion }} · {{ negocio.telefono }}
+    <br><small>Sistema de reservas — proyecto de demostración con datos ficticios.</small>
+  </footer>
+  {% block scripts %}{% endblock %}
+</body>
+</html>

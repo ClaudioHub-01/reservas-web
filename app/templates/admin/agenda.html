@@ -1,0 +1,64 @@
+{% extends "base.html" %}
+{% block titulo %}Agenda · {{ negocio.nombre }}{% endblock %}
+{% block contenido %}
+<div class="cabecera-admin">
+  <h1>Agenda</h1>
+  <a class="boton secundario" href="{{ url_for('admin.exportar', desde=lunes.isoformat(), hasta=domingo.isoformat()) }}">⬇ Exportar semana (CSV)</a>
+</div>
+
+<section class="kpis">
+  <div class="kpi"><small>Reservas hoy</small><b>{{ ind_dia.reservas }}</b></div>
+  <div class="kpi"><small>Ocupación del día</small><b>{{ ind_dia.ocupacion }}%</b></div>
+  <div class="kpi"><small>Ingresos estimados semana</small><b>{{ ind_semana.ingresos | clp }}</b></div>
+  <div class="kpi"><small>Personas esta semana</small><b>{{ ind_semana.personas }}</b></div>
+</section>
+
+<section class="tarjeta semana">
+  {% set maximo = (por_dia.values() | max) or 1 %}
+  {% for d, n in por_dia.items() %}
+  <a class="dia-semana {% if d == dia %}activo{% endif %}" href="{{ url_for('admin.agenda', fecha=d.isoformat()) }}">
+    <span class="barra-dia"><span style="height: {{ (100 * n / maximo) | round }}%"></span></span>
+    <small>{{ (d | fecha_larga).split(' ')[0][:3] }} {{ d.day }}</small><b>{{ n }}</b>
+  </a>
+  {% endfor %}
+</section>
+
+<section class="tarjeta">
+  <div class="navegacion-dia">
+    <a href="{{ url_for('admin.agenda', fecha=anterior.isoformat()) }}">←</a>
+    <h2>{{ dia | fecha_larga | capitalize }}{% if dia == hoy %} · hoy{% endif %}</h2>
+    <a href="{{ url_for('admin.agenda', fecha=siguiente.isoformat()) }}">→</a>
+  </div>
+  {% if not reservas %}
+    <p class="ayuda">No hay reservas para este día.</p>
+  {% else %}
+  <div class="tabla">
+  <table>
+    <thead><tr><th>Hora</th><th>Servicio</th><th>Cliente</th><th>Personas</th><th>Código</th><th>Estado</th></tr></thead>
+    <tbody>
+    {% for r in reservas %}
+      <tr class="{{ r.estado }}">
+        <td><b>{{ r.inicio[11:16] }}</b><small> – {{ r.fin[11:16] }}</small></td>
+        <td>{{ servicios[r.servicio_id].nombre if r.servicio_id in servicios else r.servicio_id }}</td>
+        <td>{{ r.nombre }}<br><small>{{ r.telefono }} · {{ r.email }}</small>{% if r.comentario %}<br><small class="comentario">💬 {{ r.comentario }}</small>{% endif %}</td>
+        <td>{{ r.personas }}</td>
+        <td><code>{{ r.codigo }}</code></td>
+        <td>
+          <form method="post" action="{{ url_for('admin.cambiar_estado', reserva_id=r.id) }}">
+            <input type="hidden" name="csrf" value="{{ csrf() }}">
+            <input type="hidden" name="fecha" value="{{ dia.isoformat() }}">
+            <select name="estado" onchange="this.form.submit()" aria-label="Estado de la reserva">
+              {% for clave, texto in estados.items() %}
+              <option value="{{ clave }}" {% if r.estado == clave %}selected{% endif %}>{{ texto }}</option>
+              {% endfor %}
+            </select>
+          </form>
+        </td>
+      </tr>
+    {% endfor %}
+    </tbody>
+  </table>
+  </div>
+  {% endif %}
+</section>
+{% endblock %}
